@@ -20,26 +20,24 @@ class Player:
 		self.age = AGE
 		self.gamesPlayed = GP
 		self.minPerGame = MPG
-		self.freeThrowsAtt = FTA
-		self.freeThrowPer = FTP
-		self.twoPointAtt = TWPA
-		self.twoPointPer = TWPP
-		self.threePointAtt = THPA
-		self.threePointPer = THPP
-		self.fieldGoalEff = eFG
-		self.trueShooting = TS
-		self.pointsPerGame = PPG
-		self.reboundsPerGame = RPG
-		self.assistsPerGame = APG
-		self.stealsPerGame = SPG
-		self.blocksPerGame = BPG
-		self.turnoversPerGame = TOPG
-		self.versatilityIndex = VI
-		self.offensiveRating = ORTG
-		self.defensiveRating = DRTG
+
+		self.stats = []
+		self.stats.append( float(FTP) )
+		self.stats.append( float(TWPP) )
+		self.stats.append( float(THPP) )
+		self.stats.append( float(PPG) )
+		self.stats.append( float(BPG) )
+		self.stats.append( float(APG) )
+		self.stats.append( float(SPG) )
+		self.stats.append( float(BPG) )
+		self.stats.append( float(TOPG) )
+		self.stats.append( float(VI) )
+		self.stats.append( float(ORTG) )
+		self.stats.append( float(DRTG) )
 
 rows = []
 
+# Read the CSV file of NBA Stats
 with open('NBA-Stats-2021-22.csv', newline='') as csvfile:
 	# creating a csv reader object
 	csvreader = csv.reader(csvfile)
@@ -53,25 +51,24 @@ with open('NBA-Stats-2021-22.csv', newline='') as csvfile:
   
 	# get total number of rows
 	print("Total no. of players: %d"%(csvreader.line_num))
-  
-# printing the field names
-# FULL NAME, TEAM, POS, AGE, GP, MPG, FTA, FT%, 2PA, 2P%, 3PA, 3P%, eFG%, TS%, PPG, RPG, APG, SPG, BPG, TOPG, VI, ORTG, DRTG
-print('Field names are:' + ', '.join(field for field in fields))
 
-guardExPlayer = ["Stephen Curry", "Kyrie Irving", "Zach LaVine", "De'Aaron Fox", "Russell Westbrook", "Pat Connaughton", "Markus Howard"]
-guardExRtg = [96, 91, 88, 84, 78, 73, 67]
+# Example players that the computer will take stats from
+guardExPlayer = ["Stephen Curry", "Kyrie Irving", "Zach LaVine", "De'Aaron Fox", "Russell Westbrook", "Pat Connaughton", "Markus Howard", "Spencer Dinwiddie"]
+guardExRtg = [96, 91, 88, 84, 78, 73, 67, 82]
 
-forwardExPlayer = ["Giannis Antetokounmpo", "Jayson Tatum", "Domantas Sabonis", "Miles Bridges", "Kelly Oubre Jr.", "Justin Holiday", "CJ Elleby"]
-forwardExRtg = [96, 90, 87, 84, 78, 73, 68]
+forwardExPlayer = ["Giannis Antetokounmpo", "Jayson Tatum", "Domantas Sabonis", "Miles Bridges", "Kelly Oubre Jr.", "Justin Holiday", "CJ Elleby", "Jimmy Butler", "Kevin Durant"]
+forwardExRtg = [96, 90, 87, 84, 78, 73, 68, 91, 96]
 
-centerExPlayer = ["Nikola Jokic", "Karl-Anthony Towns", "Deandre Ayton", "Steven Adams", "DeMarcus Cousins", "Kai Jones", "Tacko Fall"]
-centerExRtg = [95, 89, 86, 83, 78, 72, 71]
+centerExPlayer = ["Nikola Jokic", "Karl-Anthony Towns", "Deandre Ayton", "Steven Adams", "DeMarcus Cousins", "Kai Jones", "Tacko Fall", "Boban Marjanovic"]
+centerExRtg = [95, 89, 86, 83, 78, 72, 71, 74]
 
 allPlayerRtg = []
 allExStats = []
 
 tempList = []
 
+# Go through all the example players and add their stats to an array
+# of all the stats the computer will read
 for row in rows:
 	for index, g in enumerate(guardExPlayer):
 		if g == row[0]:
@@ -87,8 +84,6 @@ for row in rows:
 			tempList.append(float(row[20]))
 			tempList.append(float(row[21]))
 			tempList.append(float(row[22]))
-
-			# print(tempList, "printed tempList for guards")
 
 			allPlayerRtg.append(guardExRtg[index])
 			allExStats.append(tempList)
@@ -128,24 +123,19 @@ for row in rows:
 
 			allPlayerRtg.append(centerExRtg[index])
 			allExStats.append(tempList)
+	tempList = []
 
-	if len(tempList) == 0:
-		continue
-	else:
-		tempList = []
+# Let the machine do its magic
+clf.fit(allExStats, allPlayerRtg)
 
-X = np.array(allExStats)
-y = np.array(allPlayerRtg)
-
-clf.fit(X, y)
-
+# Ask the user what team they want to see for each player's rating
 team = input("What team do you want to see? ")
 
-#  printing first 5 rows
-
+# create a player object for every player on the selected team
 for row in rows:
 	if row[1] == team:
 		playerRoster.append( Player(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22]) )
 
+# Display all the players and their rating
 for players in playerRoster:
-	print(players.name, clf.predict( [[players.freeThrowPer, players.twoPointPer, players.threePointPer, players.pointsPerGame, players.reboundsPerGame, players.assistsPerGame, players.stealsPerGame, players.blocksPerGame, players.turnoversPerGame, players.versatilityIndex, players.offensiveRating, players.defensiveRating]] ) )
+	print(players.name, clf.predict( [players.stats] ) )
