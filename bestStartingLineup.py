@@ -5,6 +5,8 @@ from sklearn.ensemble import RandomForestClassifier
 # Import the numpy package with "np" as an alias.
 import numpy as np
 import csv
+import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 # Create an "classifier" object which will try to "learn" our function
 clf = RandomForestClassifier()
@@ -13,13 +15,14 @@ playerRoster = []
 rankedRoster = []
 
 class Player:
-	def __init__(self, NAME, TEAM, POS, AGE, GP, MPG, FTA, FTP, TWPA, TWPP, THPA, THPP, eFG, TS, PPG, RPG, APG, SPG, BPG, TOPG, VI, ORTG, DRTG):
+	def __init__(self, NAME, TEAM, POS, AGE, GP, MPG, FTA, FTP, TWPA, TWPP, THPA, THPP, eFG, TS, PPG, RPG, APG, SPG, BPG, TOPG, VI, ORTG, DRTG, RTG):
 		self.name = NAME
 		self.team = TEAM
 		self.position = POS
 		self.age = AGE
 		self.gamesPlayed = GP
 		self.minPerGame = MPG
+		self.rating = int(RTG)
 
 		self.stats = []
 		self.stats.append( float(FTP) )
@@ -133,9 +136,39 @@ team = input("What team do you want to see? ")
 
 # create a player object for every player on the selected team
 for row in rows:
-	if row[1] == team:
-		playerRoster.append( Player(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22]) )
+	if row[1] == team or row[0] == team:
+		if len(row) == 23 or row[23] == '':
+			playerRoster.append( Player(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], '0') )
+		elif len(row) == 24:
+			playerRoster.append( Player(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23]) )
+print('')
+
+predictions = []
+actual = []
 
 # Display all the players and their rating
 for players in playerRoster:
-	print(players.name, clf.predict( [players.stats] ) )
+	prediction = clf.predict( [players.stats] )[0]
+	print(players.name, "\n\tPredicted Rating:", prediction, "\n\tActual Rating:", players.rating, "\n")
+	predictions.append(prediction)
+	actual.append(players.rating)
+
+predAndActual = list(zip(predictions, actual))
+predAndActual = sorted(predAndActual, key=lambda data : data[1])
+
+for index, smallzip in enumerate(predAndActual):
+	predictions[index] = smallzip[0]
+	actual[index] = smallzip[1]
+
+# create and save a plot of the results
+ax = plt.figure().gca()
+plt.plot(predictions,label="Predicted Value")
+plt.plot(actual,label="Actual Value")
+plt.title(team)
+plt.xlabel("Player Number")
+plt.ylabel("Player Rating")
+ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+plt.legend()
+
+plt.show()
+plt.savefig("predictionsVsActual.png")
