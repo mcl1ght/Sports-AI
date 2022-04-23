@@ -64,18 +64,17 @@ with open('NBA-Stats-2021-22.csv', newline='') as csvfile:
 	# get total number of rows
 	print("Total no. of players: %d"%(csvreader.line_num))
 
-  
 # printing the field names
 # NAME, TEAM, POS, AGE, GP, MPG, FTA, FT%, 2PA, 2P%, 3PA, 3P%, eFG%, TS%, PPG, RPG, APG, SPG, BPG, TOPG, VI, ORTG, DRTG
 
-guardExPlayer = ["Stephen Curry", "Kyrie Irving", "Zach LaVine", "De'Aaron Fox", "Russell Westbrook", "Pat Connaughton", "Markus Howard", "Spencer Dinwiddie"]
-guardExRtg = [96, 91, 88, 84, 78, 73, 67, 82]
+guardExPlayer = ["Stephen Curry", "Ja Morant", "Kyrie Irving", "Zach LaVine", "Shai Gilgeous-Alexander", "De'Aaron Fox", "Mike Conley", "Spencer Dinwiddie", "Russell Westbrook", "Austin Rivers", "Pat Connaughton", "Josh Christopher", "Markus Howard", "Isaiah Joe"]
+guardExRtg = [96, 93, 91, 88, 86, 84, 82, 82, 78, 75, 73, 70, 67, 67]
 
-forwardExPlayer = ["Giannis Antetokounmpo", "Jayson Tatum", "Domantas Sabonis", "Miles Bridges", "Kelly Oubre Jr.", "Justin Holiday", "CJ Elleby", "Jimmy Butler", "Kevin Durant"]
-forwardExRtg = [96, 90, 87, 84, 78, 73, 68, 91, 96]
+forwardExPlayer = ["Giannis Antetokounmpo", "Kawhi Leonard", "Jayson Tatum", "Domantas Sabonis", "Miles Bridges", "Kelly Oubre Jr.", "Justin Holiday", "CJ Elleby", "Jimmy Butler", "Kevin Durant", "Taj Gibson"]
+forwardExRtg = [96, 95, 90, 87, 84, 78, 73, 68, 91, 96, 75]
 
-centerExPlayer = ["Nikola Jokic", "Karl-Anthony Towns", "Deandre Ayton", "Steven Adams", "DeMarcus Cousins", "Kai Jones", "Tacko Fall", "Boban Marjanovic"]
-centerExRtg = [95, 89, 86, 83, 78, 72, 71, 74]
+centerExPlayer = ["Nikola Jokic", "Joel Embiid", "Karl-Anthony Towns", "Deandre Ayton", "Steven Adams", "DeMarcus Cousins", "Kai Jones", "Tacko Fall", "Boban Marjanovic"]
+centerExRtg = [95, 95, 89, 86, 83, 78, 72, 71, 74]
 
 guardExRtgInOrder = []
 forwardExRtgInOrder = []
