@@ -8,6 +8,11 @@ import csv
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 
+def absoluteVal(num):
+	if num < 0:
+		num *= -1
+	return num
+
 # Create an "classifier" object which will try to "learn" our function
 clf = RandomForestClassifier()
 
@@ -133,6 +138,7 @@ clf.fit(allExStats, allPlayerRtg)
 
 # Ask the user what team they want to see for each player's rating
 team = input("What team do you want to see? ")
+playerNames = []
 
 # create a player object for every player on the selected team
 for row in rows:
@@ -141,18 +147,24 @@ for row in rows:
 			playerRoster.append( Player(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], '0') )
 		elif len(row) == 24:
 			playerRoster.append( Player(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19], row[20], row[21], row[22], row[23]) )
+		playerNames.append(row[0])
 print('')
 
 predictions = []
 actual = []
 
+sumOfDifferences = 0
 # Display all the players and their rating
 for players in playerRoster:
 	prediction = clf.predict( [players.stats] )[0]
 	print(players.name, "\n\tPredicted Rating:", prediction, "\n\tActual Rating:", players.rating, "\n")
 	predictions.append(prediction)
 	actual.append(players.rating)
+	sumOfDifferences += absoluteVal((players.rating-prediction))
 
+print("The average absolute difference between guesses is", (sumOfDifferences/len(playerRoster)))
+
+# graph the data
 predAndActual = list(zip(predictions, actual))
 predAndActual = sorted(predAndActual, key=lambda data : data[1])
 
@@ -168,6 +180,7 @@ plt.title(team)
 plt.xlabel("Player Number")
 plt.ylabel("Player Rating")
 ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 plt.legend()
 
 plt.show()
